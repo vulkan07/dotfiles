@@ -1,0 +1,15 @@
+fpath="$HOME/.config/scripts/tpstate"
+state=$(cat $fpath)
+tpid=$(xinput | grep Touchpad | awk '{print $6}' | cut -b 4,5)
+
+
+if [ $state == 1 ]
+then
+	xinput disable $tpid
+	state=0
+else
+	xinput enable $tpid
+	state=1
+fi
+
+echo $state > $fpath

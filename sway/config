@@ -1,0 +1,303 @@
+  ##########################
+#####                    #####
+  #  Barni SWAY Config     #
+  #	  		 0.0           #
+#####                    ######
+  ##########################
+
+ #####################
+##		GENERAL  	 ##
+ #####################
+
+## Use Windows Key as Super Key
+set $mod Mod4
+## Drag Floating Windows
+floating_modifier $mod
+
+## Set Keyboard Layout to HU
+input type:keyboard {
+    xkb_layout hu
+}
+
+## Set touchpad controls
+input type:touchpad {
+    tap enabled
+}
+
+## Set Font
+font pango:Notos Sans Mono 11
+
+## Set HDMI to left TODO make this dynamic
+output HDMI-A-1 position 0 0
+
+## Set Gaps for All Windows
+for_window [class="^.*"] border pixel 2
+gaps inner 5
+gaps outer 0
+	#smart_gaps on
+
+## Set certain small apps, windows to float
+for_window {
+	[app_id="pavucontrol"] floating enable
+	[app_id="blueberry.py"] floating enable
+	[app_id="qt5ct"] floating enable
+	[class="Lxappearance"] floating enable
+	[title="Friends List"] floating enable
+}
+
+## from https://wiki.archlinux.org/title/Sway#Floating_windows
+for_window {
+	[window_type="dialog"] floating enable
+	[window_role="dialog"] floating enable
+	[window_role="pop-up"] floating enable
+	[window_role="bubble"] floating enable
+	[title="(?:Open|Save) (?:File|Folder|As)"] floating enable
+}
+## Start Picom
+
+## Set Background
+output "*" bg $HOME/Pictures/Wallpaper.jpg fill
+
+## Start Redshift - added _always to try if it fixes redshift after sleep
+#exec_always --no-startup-id redshift
+exec_always --no-startup-id gammastep -c $HOME/.config/redshift.conf
+
+
+######################
+#### NOT MY STUFF ####
+
+# Use pactl to adjust volume in PulseAudio.
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+
+
+ #####################
+##	CUSTOM KEYBINDS	 ##
+ #####################
+
+
+	#########################
+#### CUSTOM i3 CONTROL BINDS ####
+
+# Switch between workspaces with arrows
+bindsym $mod+Mod1+Left workspace prev_on_output
+bindsym $mod+Mod1+Right workspace next_on_output
+
+
+# Selection and Full Screenshot
+bindsym $mod+p exec grim -g "$(slurp)" - | wl-copy
+bindsym $mod+Shift+p exec "grim -g - | wl-copy"
+
+
+# Lockscreen
+#bindsym $mod+Shift+l exec --no-startup-id "XDG_CURRENT_DESKTOP=sway swaylock-fancy -p -e"
+#bindsym $mod+y exec --no-startup-id "XDG_CURRENT_DESKTOP=sway swaylock-fancy -p -e"
+bindsym $mod+y exec --no-startup-id "swaylock -e -i $HOME/Pictures/Wallpaper.jpg"
+
+# Custom Touchpad Toggle Script
+bindsym $mod+t exec --no-startup-id "swaymsg input type:touchpad events toggle enabled disabled"
+
+
+	########################
+#### CUSTOM CONTROL SCRIPTS ####
+
+# Custom Brightness Control Script
+	#bindsym XF86MonBrightnessUp exec --no-startup-id "/home/olahb/.config/scripts/brightness 8"
+	#bindsym XF86MonBrightnessDown exec --no-startup-id "/home/olahb/.config/scripts/brightness -8"
+bindsym XF86MonBrightnessUp exec --no-startup-id "light -A 5"
+bindsym XF86MonBrightnessDown exec --no-startup-id "light -U 5"
+
+
+	##############
+#### APPLICATIONS ####
+
+#bindsym $mod+c exec --no-startup-id brave --enable-features=UseOzonePlatform --ozone-platform=wayland
+bindsym $mod+o exec --no-startup-id obsidian 
+bindsym $mod+c exec --no-startup-id brave 
+bindsym $mod+Shift+g exec --no-startup-id 'brave https://chat.openai.com; swaymsg [class="Brave-browser"] focus'
+bindsym $mod+g exec --no-startup-id youtubemusic 
+bindsym $mod+Shift+c exec --no-startup-id chromium 
+bindsym $mod+i exec --no-startup-id discord 
+bindsym $mod+m exec --no-startup-id caprine
+bindsym $mod+q exec --no-startup-id thunar 
+bindsym $mod+Return exec --no-startup-id alacritty 
+#bindsym $mod+d exec --no-startup-id j4-dmenu-desktop
+#bindsym $mod+d exec --no-startup-id $(tofi-run -c $HOME/.config/tofi)
+bindsym $mod+d exec --no-startup-id bemenu-run
+
+ ####################
+## GENERAL i3 BINDS ##
+ ####################
+
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r exec "swaymsg reload"
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec "swaynag -t warning -m 'Do you want to exit Sway?' -B 'EXIT' 'sway-msg exit'"
+
+set $up k
+set $down j
+set $left h
+set $right l
+
+
+# Kill Window
+bindsym $mod+Shift+q kill
+
+## Navigate Between Windows
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down 
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+
+
+## Move Windows
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+## (Custom) Move workspaces between screens
+bindsym $mod+Control+Right move workspace to output right
+bindsym $mod+Control+Left move workspace to output left
+bindsym $mod+Control+Down move workspace to output down
+bindsym $mod+Control+Up move workspace to output up
+
+## Split Horizontally 
+bindsym $mod+Shift+h split h
+## Split Vertically
+bindsym $mod+Shift+v split v
+
+## Toggle Fullscreen
+bindsym $mod+f fullscreen toggle
+
+## change container layout (stacked, tabbed, toggle split)
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# Toggle Floating
+bindsym $mod+Shift+space floating toggle
+
+# Change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# Focus the parent container
+bindsym $mod+a focus parent
+
+
+
+ #####################
+##	   WORKSPACES    ##
+ #####################
+
+# Define names for default workspaces for which we configure key bindings later on.
+# We use variables to avoid repeating the names in multiple places.
+set $ws0 "0"
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+
+# switch to workspace
+
+set $workspace exec /usr/local/libexec/sway-wscap-switcher
+bindsym $mod+0 $workspace $ws0
+bindsym $mod+1 $workspace $ws1
+bindsym $mod+2 $workspace $ws2
+bindsym $mod+3 $workspace $ws3
+bindsym $mod+4 $workspace $ws4
+bindsym $mod+5 $workspace $ws5
+bindsym $mod+6 $workspace $ws6
+bindsym $mod+7 $workspace $ws7
+bindsym $mod+8 $workspace $ws8
+bindsym $mod+9 $workspace $ws9
+
+#bindsym $mod+0 workspace number $ws0
+#bindsym $mod+1 workspace number $ws1
+#bindsym $mod+2 workspace number $ws2
+#bindsym $mod+3 workspace number $ws3
+#bindsym $mod+4 workspace number $ws4
+#bindsym $mod+5 workspace number $ws5
+#bindsym $mod+6 workspace number $ws6
+#bindsym $mod+7 workspace number $ws7
+#bindsym $mod+8 workspace number $ws8
+#bindsym $mod+9 workspace number $ws9
+
+# move focused container to workspace
+bindsym $mod+Shift+0 move workspace number $ws0
+bindsym $mod+Shift+1 move workspace number $ws1
+bindsym $mod+Shift+2 move workspace number $ws2
+bindsym $mod+Shift+3 move workspace number $ws3
+bindsym $mod+Shift+4 move workspace number $ws4
+bindsym $mod+Shift+5 move workspace number $ws5
+bindsym $mod+Shift+6 move workspace number $ws6
+bindsym $mod+Shift+7 move workspace number $ws7
+bindsym $mod+Shift+8 move workspace number $ws8
+bindsym $mod+Shift+9 move workspace number $ws9
+
+ ######################
+##   RESIZE WINDOWS   ##
+ ######################
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        # Resize via Arrow Keys 
+        bindsym Left resize shrink width 5 px or 5 ppt
+        bindsym Down resize grow height 5 px or 5 ppt
+        bindsym Up resize shrink height 5 px or 5 ppt
+        bindsym Right resize grow width 5 px or 5 ppt
+
+        # back to normal: Enter or Escape or $mod+r
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+        bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
+
+
+ #####################
+##		  BAR  		 ##
+ #####################
+
+
+bar {
+    swaybar_command waybar
+}
+
+ #####################
+##	  COLORSCHEME    ##
+ #####################
+
+# TODO Wtf is this pls fix bruh
+
+
+set $cc1 #051e3e
+set $cc2 #251e3e
+set $cc3 #451e3e
+set $cc4 #651e3e 
+set $cc5 #851e3e
+set $cc6 #e388a4
+set $ccr #ff0000
+set $cc55 #bd607c
+set $nc #051e3e77
+
+
+# class                 border      backgr.    text       indicator   
+client.focused          $cc4        $cc4       $cc6       $cc55
+client.focused_inactive $cc4        $cc4       $cc6       $cc55
+client.unfocused        $cc1        #45323777  #cccccccc  $cc55
+client.urgent           $cc6        $cc5       $cc6       $cc55
+#client.placeholder      $hicolor    $bgcolor   $textcolor $bgcolor
+#client.background       #ffffff

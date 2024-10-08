@@ -1,0 +1,73 @@
+if [ $# -eq 0 ]; then
+    echo "Usage: hdmi [position] <primary> <secondary>"
+    echo "- position: l (left), r (right), t/u (top), b/d (bottom), m/s (mirror), o/off (off)"
+    echo "- primary (optional):   Name of primary screen"
+    echo "- secondary (optional): Name of secondary screen"
+    exit 1
+fi
+
+# Set Monitor Names
+if [ $# -eq 3 ]; then
+	# Names from cmd arguments
+	PRIMARY=$2
+	SECONDARY=$3
+else
+	# Default names
+	PRIMARY=eDP1
+	SECONDARY=HDMI1
+fi
+
+# If 1, polybar will be started on all screens
+# Mirror mode disables this
+POLYBAR=1
+
+# Kill polybar
+pkill polybar
+
+
+# Map single letters to full commands
+case $1 in
+    l)
+        xrandr --output $SECONDARY --auto --left-of $PRIMARY
+		echo -e "\e[1;34m$SECONDARY \e[3mleft\e[0m"
+        ;;
+    r)
+        xrandr --output $SECONDARY --auto --right-of $PRIMARY
+		echo -e "\e[1;34m$SECONDARY \e[3mright\e[0m"
+        ;;
+    t | u)
+        xrandr --output $SECONDARY --auto --above $PRIMARY
+		echo -e "\e[1;34m$SECONDARY \e[3mtop\e[0m"
+        ;;
+    b | d)
+        xrandr --output $SECONDARY --auto --below $PRIMARY
+		echo -e "\e[1;34m$SECONDARY \e[3mbottom\e[0m"
+        ;;
+    o | off )
+        xrandr --output $SECONDARY --off
+		echo -e "\e[1;34m$SECONDARY \e[3moff\e[0m"
+		POLYBAR=0
+        ;;
+	m | s)
+        xrandr --output $SECONDARY --auto --same-as $PRIMARY --scale-from 1920x1080
+		echo -e "\e[1;34m$SECONDARY \e[3mmirrored\e[0m"
+		POLYBAR=0
+		;;
+    *)
+		echo -e "\e[0;91mInvalid Option: \e[1;91m$1\e[0m"
+        exit 1
+        ;;
+esac
+
+# Set polybar on all screens (except when mirrored)
+if type "xrandr" > /dev/null && [ $POLYBAR -ne 0 ]; then
+  for m in $(xrandr --query | grep " connected" | cut -d" " -f1); do
+    MONITOR=$m polybar -q --reload &
+  done
+else
+  polybar -q --reload &
+fi
+
+# Set wallpaper
+feh --bg-scale /home/olahb/Pictures/Wallpaper.jpg
+

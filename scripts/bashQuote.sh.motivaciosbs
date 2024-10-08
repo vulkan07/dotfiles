@@ -1,0 +1,32 @@
+#random_number=$((2 + RANDOM % 2))
+# always display text instead random chance
+random_number=1
+
+if [ $random_number -eq 1 ]; then
+	quotes=(
+		"🗿(you)"
+		"Keep it up! You're on the right track" 
+		"Jó úton haladsz! Haladj tovább!"
+		"Keep trying; You're closer than you think, remember?"
+		"Próbáld kicsit tovább, közelebb vagy, hogy megoldd, mint gondolnád"
+		"Forgive yourself for once :D"
+		"Bocsáss meg magadnak, akár a te hibád akár nem. Character development you know"
+		"Good Luck :D"
+		"Mit akarsz ma elérni? Érd el!"
+		"Embrace who you are"
+		"Choose one hobby, passion of yours, and embrace it today!!"
+		"Top tier vagy (bizonyos szempontból) and those are not your words..."
+		"Nem vagy egyedül, sose voltál"
+		"Give yourself time, it heals"
+		"Write it down if it still bothers"
+		"Lehet hibába vitted magad, de sokat fejlődsz belőle. (Lehet mégsem hiba, majd kiderül)"
+		"NE ülj az ágyon és nézz YouTubeot, akkor már írj pár sort a Mortisomniába"
+	)
+
+
+    # Choose a random quote from the list
+    selected_quote="${quotes[RANDOM % ${#quotes[@]}]}"
+
+    echo -e "\033[3;37m\"$selected_quote\"\033[0m"
+fi
+
